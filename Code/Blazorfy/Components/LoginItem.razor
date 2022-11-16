@@ -1,0 +1,27 @@
+@namespace Blazorfy
+@inject SpotifyProvider _provider;
+@if (Value)
+{
+    <button class="btn btn-danger" @onclick="_provider.LogoutAsync">Logout</button> 
+    <span class="badge bg-primary">@Item?.DisplayName</span>
+}
+else
+{
+    <button class="btn btn-success" @onclick="_provider.LoginAsync">Login</button>
+}
+
+@code
+{
+    [Parameter]
+    public bool Value { get; set; }
+
+    public PrivateUser? Item { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Value)
+        {
+            Item = await _provider.GetUserAsync();
+        }
+    }
+}

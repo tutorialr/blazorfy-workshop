@@ -1,9 +1,26 @@
 ﻿@page "/"
+@inject SpotifyProvider _provider;
+<LoginItem Value="@_provider.IsLoggedIn" />
+@if (_provider.IsLoggedIn)
+{
+    // Items Output
 
-<PageTitle>Index</PageTitle>
+}
+@code
+{
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Code { get; set; } = null;
 
-<h1>Hello, world!</h1>
+    // Items Property
 
-Welcome to your new app.
+    protected override async Task OnParametersSetAsync()
+    {
+        if (await _provider.HandleCodeAsync(Code))
+        {
+            // Items List
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+        }
+    }
+}
+
