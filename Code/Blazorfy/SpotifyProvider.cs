@@ -130,7 +130,11 @@ public class SpotifyProvider
                 as Paging<TItem>;
             }
             // Albums
-
+            if (typeof(TItem) == typeof(Album))
+            {
+                items = await _api.GetAllNewReleasesAsync(page: page) 
+                as Paging<TItem>;
+            }
             if (items != null)
             {
                 results.AddRange(items.Items);
@@ -165,7 +169,10 @@ public class SpotifyProvider
                 items = content.Playlists as Paging<TItem>;
             }
             // Albums
-
+            if (typeof(TItem) == typeof(Album))
+            {
+                items = content.Albums as Paging<TItem>;
+            }
             // Podcasts
 
             if (items != null)

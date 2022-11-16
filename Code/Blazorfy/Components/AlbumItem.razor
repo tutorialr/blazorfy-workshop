@@ -1,0 +1,19 @@
+@namespace Blazorfy
+<div class="card">
+    @if (Value.Images.Count > 0)
+    {
+        <img src="@Value.Images[0].Url" class="card-img-top" alt="@Value.Name" />
+    }
+    <Scannable Value="@Value.Uri" />
+    <div class="card-body">
+        <h5 class="card-title">
+            @Value.Name
+        </h5>
+    </div>
+</div>
+
+@code 
+{
+    [Parameter]
+    public SimplifiedAlbum Value { get; set; } = new();
+}
