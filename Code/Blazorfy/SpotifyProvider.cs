@@ -124,7 +124,11 @@ public class SpotifyProvider
                 as Paging<TItem>;
             }
             // Playlists
-
+            if (typeof(TItem) == typeof(SimplifiedPlaylist))
+            {
+                items = await _api.GetCategoryPlaylistsAsync(id, page: page) 
+                as Paging<TItem>;
+            }
             // Albums
 
             if (items != null)
@@ -138,7 +142,42 @@ public class SpotifyProvider
         return results;
     }
 
-
     // Search Method
+    public async Task<List<TItem>> SearchAsync<TItem>(string query) 
+    where TItem : class
+    {
+        var results = new List<TItem>();
+        var page = new Page() { Limit = total };
+        int count;
+        do
+        {
+            Paging<TItem>? items = null;
+            var searchType = new SearchType()
+            {
+                Playlist = typeof(TItem) == typeof(SimplifiedPlaylist),
+                Album = typeof(TItem) == typeof(Album),
+                Show = typeof(TItem) == typeof(SimplifiedShow)
+            };
+            var content = await _api.SearchForItemAsync(query, searchType, page: page);
+            // Playlists
+            if (typeof(TItem) == typeof(SimplifiedPlaylist))
+            {
+                items = content.Playlists as Paging<TItem>;
+            }
+            // Albums
+
+            // Podcasts
+
+            if (items != null)
+            {
+                results.AddRange(items.Items);
+                page.Offset += total;
+            }
+            count = items?.Count ?? 0;
+        }
+        while (count > 0 && results.Count < max && count == total);
+        return results;
+    }
+
 
 }

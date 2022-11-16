@@ -1,0 +1,63 @@
+@page "/playlists/"
+@page "/playlists/{id}"
+@inject SpotifyProvider _provider;
+<LoginItem Value="@_provider.IsLoggedIn" />
+@if (_provider.IsLoggedIn)
+{
+    // Items Output
+    @if (string.IsNullOrEmpty(Id))
+    {
+        <h1>Search @Search</h1>
+        <form @onsubmit="OnParametersSetAsync">
+            <input type="text" @bind="Search" @bind:event="oninput" />
+            <button class="btn btn-primary">Search</button>
+        </form>
+    }
+    else
+    {
+        <h1>Playlists</h1>
+    }
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-4 p-2 g-2">
+            @foreach (var item in Items)
+            {
+                <div class="col">
+                    <PlaylistItem Value="@item" />
+                </div>
+            }
+        </div>
+    </div>
+}
+@code 
+{
+    public List<SimplifiedPlaylist> Items { get; set; } = new();
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Search { get; set; }
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    // Items Method
+    protected async override Task OnParametersSetAsync()
+    {
+        Items.Clear();
+        if (await _provider.IsLoggedInAsync())
+        {
+            if (Search != null)
+            {
+                Items = await _provider.SearchAsync<SimplifiedPlaylist>(Search);
+            }
+            else
+            {
+                if (Id != null)
+                {
+                    Items = await _provider.ListAsync<SimplifiedPlaylist>(Id);
+                }
+            }
+        }
+    }
+
+
+}
