@@ -1,0 +1,37 @@
+﻿@page "/"
+@inject SpotifyProvider _provider;
+<LoginItem Value="@_provider.IsLoggedIn" />
+@if (_provider.IsLoggedIn)
+{
+    // Items Output
+    <h1>Categories</h1>
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-4 p-2 g-2">
+            @foreach (var item in Items)
+            {
+                <div class="col">
+                    <CategoryItem Value="@item" />
+                </div>
+            }
+        </div>
+    </div>
+}
+@code
+{
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Code { get; set; } = null;
+
+    // Items Property
+    public List<Category> Items { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (await _provider.HandleCodeAsync(Code))
+        {
+            // Items List
+            Items = await _provider.ListAsync<Category>();
+        }
+    }
+}
+

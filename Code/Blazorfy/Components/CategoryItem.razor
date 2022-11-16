@@ -1,0 +1,21 @@
+@namespace Blazorfy
+<a href="playlists/@Value.Id">
+    <div class="card">
+        @if (Value.Images.Count > 0)
+        {
+            <img class="card-img-top" 
+            src="@Value.Images[0].Url" alt="@Value.Name" />
+        }
+        <div class="card-body">
+            <h5 class="card-title">
+                @Value.Name
+            </h5>
+        </div>
+    </div>
+</a>
+
+@code 
+{
+    [Parameter]
+    public Category Value { get; set; } = new();
+}
