@@ -108,6 +108,36 @@ public class SpotifyProvider
         await _api.GetUserProfileAsync();
 
     // List Method
+    public async Task<List<TItem>> ListAsync<TItem>(string? id = null) 
+    where TItem : class
+    {
+        var results = new List<TItem>();
+        var page = new Page() { Limit = total };
+        int count;
+        do
+        {
+            Paging<TItem>? items = null;
+            // Categories
+            if (typeof(TItem) == typeof(Category))
+            {
+                items = await _api.GetAllCategoriesAsync(page: page) 
+                as Paging<TItem>;
+            }
+            // Playlists
+
+            // Albums
+
+            if (items != null)
+            {
+                results.AddRange(items.Items);
+                page.Offset += total;
+            }
+            count = items?.Count ?? 0;
+        }
+        while (count > 0 && results.Count < max && count == total);
+        return results;
+    }
+
 
     // Search Method
 
