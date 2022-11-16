@@ -174,7 +174,10 @@ public class SpotifyProvider
                 items = content.Albums as Paging<TItem>;
             }
             // Podcasts
-
+            if (typeof(TItem) == typeof(SimplifiedShow))
+            {
+                items = content.Shows as Paging<TItem>;
+            }
             if (items != null)
             {
                 results.AddRange(items.Items);
